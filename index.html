@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘 뭐 먹지? | 점심 메뉴 추천</title>
+  <style>
+    /* 기본 스타일 초기화 및 폰트 설정 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-top: 40px;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: #ff6b6b;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: #666;
+      font-size: 1rem;
+    }
+
+    /* 메인 랜덤 추천 섹션 */
+    .random-section {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      padding: 30px;
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .result-display {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #2b2b2b;
+      margin: 20px 0;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff5f5;
+      border-radius: 12px;
+      border: 2px dashed #ff8787;
+    }
+
+    .btn-random {
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-random:hover {
+      background-color: #fa5252;
+    }
+
+    .btn-random:active {
+      transform: scale(0.98);
+    }
+
+    /* 카테고리 필터 섹션 */
+    .category-section {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .category-section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .category-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .btn-category {
+      background: #e9ecef;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #495057;
+      transition: all 0.2s;
+    }
+
+    .btn-category.active, .btn-category:hover {
+      background: #ff6b6b;
+      color: white;
+    }
+
+    /* 메뉴 카드 리스트 GRID */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .menu-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+      border: 1px solid #f1f3f5;
+    }
+
+    .menu-card .emoji {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .menu-card .name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .menu-card .category-tag {
+      font-size: 0.8rem;
+      color: #868e96;
+      background: #f1f3f5;
+      padding: 3px 8px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 30px 0 10px;
+      color: #adb5bd;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>오늘 뭐 먹지? 🍱</h1>
+    <p>결정장애를 위한 오늘 점심 메뉴 추천 서비스</p>
+  </header>
+
+  <!-- 메인 랜덤 추천 기능 -->
+  <section class="random-section">
+    <h3>오늘의 추천 점심은?</h3>
+    <div class="result-display" id="result">버튼을 눌러보세요!</div>
+    <button class="btn-random" onclick="recommendMenu()">메뉴 랜덤 추천받기 🎲</button>
+  </section>
+
+  <!-- 전체 메뉴 및 카테고리 보기 -->
+  <section class="category-section">
+    <h2>전체 메뉴 목록</h2>
+    <div class="category-buttons">
+      <button class="btn-category active" onclick="filterMenu('전체', this)">전체</button>
+      <button class="btn-category" onclick="filterMenu('한식', this)">한식</button>
+      <button class="btn-category" onclick="filterMenu('중식', this)">중식</button>
+      <button class="btn-category" onclick="filterMenu('일식', this)">일식</button>
+      <button class="btn-category" onclick="filterMenu('양식', this)">양식</button>
+      <button class="btn-category" onclick="filterMenu('분식/기타', this)">분식/기타</button>
+    </div>
+
+    <div class="menu-grid" id="menuGrid">
+      <!-- 자바스크립트에 의해 동적으로 생성됩니다. -->
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Today's Lunch Recommendation. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // 메뉴 데이터 정의
+    const menuList = [
+      { name: "김치찌개", category: "한식", emoji: "🥘" },
+      { name: "된장찌개", category: "한식", emoji: "🍲" },
+      { name: "제육볶음", category: "한식", emoji: "🥩" },
+      { name: "비빔밥", category: "한식", emoji: "🥗" },
+      { name: "짜장면", category: "중식", emoji: "🍜" },
+      { name: "짬뽕", category: "중식", emoji: "🍲" },
+      { name: "마라탕", category: "중식", emoji: "🥘" },
+      { name: "돈까스", category: "일식", emoji: "🍱" },
+      { name: "초밥", category: "일식", emoji: "🍣" },
+      { name: "라멘", category: "일식", emoji: "🍜" },
+      { name: "파스타", category: "양식", emoji: "🍝" },
+      { name: "수제버거", category: "양식", emoji: "🍔" },
+      { name: "피자", category: "양식", emoji: "🍕" },
+      { name: "떡볶이", category: "분식/기타", emoji: "🍢" },
+      { name: "김밥 & 라면", category: "분식/기타", emoji: "🍙" },
+      { name: "쌀국수", category: "분식/기타", emoji: "🍜" }
+    ];
+
+    // 랜덤 추천 함수 (애니메이션 효과 포함)
+    function recommendMenu() {
+      const resultDiv = document.getElementById('result');
+      let counter = 0;
+      
+      // 추첨 효과 (빠르게 메뉴가 바뀌는 액션)
+      const interval = setInterval(() => {
+        const randomIndex = Math.floor(Math.random() * menuList.length);
+        const item = menuList[randomIndex];
+        resultDiv.textContent = `${item.emoji} ${item.name}`;
+        counter++;
+
+        if (counter > 15) {
+          clearInterval(interval);
+          // 최종 결과 선택
+          const finalIndex = Math.floor(Math.random() * menuList.length);
+          const finalItem = menuList[finalIndex];
+          resultDiv.textContent = `🎉 ${finalItem.emoji} ${finalItem.name} 🎉`;
+        }
+      }, 70);
+    }
+
+    // 카테고리 필터링 및 리스트 출력 함수
+    function displayMenus(category = '전체') {
+      const grid = document.getElementById('menuGrid');
+      grid.innerHTML = '';
+
+      const filteredList = category === '전체' 
+        ? menuList 
+        : menuList.filter(item => item.category === category);
+
+      filteredList.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'menu-card';
+        card.innerHTML = `
+          <div class="emoji">${item.emoji}</div>
+          <div class="name">${item.name}</div>
+          <span class="category-tag">${item.category}</span>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // 카테고리 버튼 클릭 이벤트
+    function filterMenu(category, btnElement) {
+      // 모든 버튼의 active 클래스 제거 후 클릭된 버튼에 부여
+      const buttons = document.querySelectorAll('.btn-category');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      displayMenus(category);
+    }
+
+    // 페이지 로드시 전체 메뉴 초기화
+    window.onload = () => {
+      displayMenus();
+    };
+  </script>
+</body>
+</html>
