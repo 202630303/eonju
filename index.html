@@ -5,77 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>스마트 역할 배정</title>
   <style>
-    /* 폰트 및 기본화 설정 */
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background-color: #f2f4f6; /* 토스 특유의 라이트 그레이 배경 */
-      color: #333d4b;
+      background-color: #F2F4F6;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
+      color: #333D4B;
     }
 
-    /* 모바일 앱 화면 비율의 컨테이너 */
+    /* 메인 앱 컨테이너 */
     .container {
-      background: #ffffff;
+      background: #FFFFFF;
       width: 100%;
-      max-width: 420px; /* 스마트폰 앱처럼 좁고 길게 */
-      border-radius: 24px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
-      padding: 30px 24px;
+      max-width: 440px;
+      border-radius: 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      padding: 40px 28px;
       position: relative;
-      min-height: 600px;
+      min-height: 640px;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
-    /* 프로그래스 바 */
-    .progress-bar-container {
+    /* 상단 진행 바 */
+    .progress-wrapper {
       width: 100%;
-      background-color: #f2f4f6;
-      height: 4px;
-      border-radius: 4px;
-      margin-bottom: 30px;
+      background-color: #F2F4F6;
+      height: 6px;
+      border-radius: 6px;
+      margin-bottom: 36px;
       overflow: hidden;
     }
 
     .progress-bar {
       height: 100%;
-      background-color: #3182f6; /* 토스 블루 */
+      background-color: #3182F6;
       width: 0%;
-      transition: width 0.4s ease;
+      border-radius: 6px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* 토스 스타일의 좌측 정렬 헤더 */
+    /* 헤더 텍스트 */
     .header-text {
-      margin-bottom: 30px;
+      margin-bottom: 32px;
     }
 
     .header-text h1 {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 700;
-      color: #191f28;
-      line-height: 1.4;
-      white-space: pre-line;
+      color: #191F28;
+      line-height: 1.35;
+      letter-spacing: -0.5px;
     }
 
     .header-text p {
-      font-size: 15px;
-      color: #8b95a1;
-      margin-top: 10px;
+      font-size: 16px;
+      color: #8B95A1;
+      margin-top: 12px;
       line-height: 1.5;
     }
 
+    /* 화면 전환 애니메이션 */
     .step {
       display: none;
       flex-direction: column;
@@ -84,49 +87,42 @@
 
     .step.active {
       display: flex;
-      animation: fadeUp 0.4s ease-out;
+      animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(15px); }
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 입력창 디자인 */
+    /* 입력 폼 */
     .form-group {
       margin-bottom: 24px;
       flex: 1;
     }
 
-    label {
-      display: block;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #4e5968;
-    }
-
     input[type="number"],
     input[type="text"] {
       width: 100%;
-      padding: 18px 16px;
-      background-color: #f2f4f6;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      color: #191f28;
+      padding: 18px 20px;
+      background-color: #F9FAFB;
+      border: 1px solid #E5E8EB;
+      border-radius: 16px;
+      font-size: 17px;
+      color: #191F28;
       font-weight: 500;
-      transition: background-color 0.2s;
+      transition: all 0.2s ease;
     }
 
     input::placeholder {
-      color: #b0b8c1;
+      color: #B0B8C1;
     }
 
     input:focus {
       outline: none;
-      background-color: #e8f3ff;
-      box-shadow: inset 0 0 0 1px #3182f6;
+      background-color: #FFFFFF;
+      border-color: #3182F6;
+      box-shadow: 0 0 0 4px rgba(49, 130, 246, 0.1);
     }
 
     .member-input-list {
@@ -135,45 +131,56 @@
       gap: 12px;
       max-height: 400px;
       overflow-y: auto;
+      padding-bottom: 10px;
     }
 
-    /* 특성 선택 칩(Chip) 디자인 */
+    /* 특성 선택 칩(Chip) */
     .trait-card {
-      margin-bottom: 30px;
+      margin-bottom: 36px;
     }
 
     .trait-card h4 {
-      font-size: 17px;
-      color: #191f28;
-      margin-bottom: 12px;
-      font-weight: 600;
+      font-size: 18px;
+      color: #191F28;
+      margin-bottom: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .trait-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
 
     .trait-option {
-      background: #f2f4f6;
-      color: #4e5968;
-      padding: 10px 16px;
-      border-radius: 20px; /* 둥근 알약 형태 */
-      font-size: 14px;
+      background: #F9FAFB;
+      border: 1px solid #E5E8EB;
+      color: #4E5968;
+      padding: 12px 18px;
+      border-radius: 100px;
+      font-size: 15px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
     }
 
-    .trait-option.selected {
-      background-color: #e8f3ff;
-      color: #3182f6;
-      font-weight: 600;
+    .trait-option:active {
+      transform: scale(0.96);
     }
 
-    /* 하단 버튼 영역 (항상 아래로 붙게) */
+    .trait-option.selected {
+      background-color: #E8F3FF;
+      border-color: #3182F6;
+      color: #3182F6;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(49, 130, 246, 0.15);
+    }
+
+    /* 하단 버튼 */
     .bottom-btn-group {
       display: flex;
       gap: 12px;
@@ -183,51 +190,54 @@
 
     .btn {
       flex: 1;
-      background-color: #3182f6;
+      background-color: #3182F6;
       color: white;
       border: none;
-      padding: 16px;
-      font-size: 16px;
+      padding: 18px;
+      font-size: 17px;
       font-weight: 600;
       border-radius: 16px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s ease;
       text-align: center;
     }
 
     .btn:active {
-      background-color: #1b64da;
+      transform: scale(0.98);
+      background-color: #1B64DA;
     }
 
     .btn-secondary {
-      background-color: #f2f4f6;
-      color: #4e5968;
-      flex: 0.4; /* 이전 버튼은 조금 작게 */
+      background-color: #F2F4F6;
+      color: #4E5968;
+      flex: 0.35;
     }
 
     .btn-secondary:active {
-      background-color: #e5e8eb;
+      background-color: #E5E8EB;
     }
 
     /* 소개 리스트 */
     .intro-list {
       list-style: none;
       margin-top: 20px;
-      margin-bottom: 30px;
     }
 
     .intro-list li {
+      background: #F9FAFB;
+      padding: 16px;
+      border-radius: 16px;
       font-size: 15px;
-      color: #4e5968;
-      margin-bottom: 16px;
+      color: #333D4B;
+      margin-bottom: 12px;
       display: flex;
-      align-items: flex-start;
-      line-height: 1.5;
+      align-items: center;
+      font-weight: 500;
     }
 
     .intro-list li span {
       margin-right: 12px;
-      font-size: 18px;
+      font-size: 20px;
     }
 
     /* 결과 리스트 디자인 */
@@ -235,34 +245,57 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      margin-bottom: 20px;
+      padding-bottom: 20px;
     }
 
     .result-item {
-      background: #f9fafb;
-      border-radius: 16px;
+      background: #FFFFFF;
+      border: 1px solid #E5E8EB;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.03);
+      border-radius: 20px;
       padding: 20px;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      align-items: flex-start;
+      gap: 16px;
+      transition: transform 0.2s ease;
+    }
+
+    .result-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .result-emoji {
+      font-size: 32px;
+      background: #F2F4F6;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+    }
+
+    .result-content {
+      flex: 1;
     }
 
     .result-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
     }
 
     .result-name {
       font-size: 18px;
       font-weight: 700;
-      color: #191f28;
+      color: #191F28;
     }
 
     .result-role {
-      background: #e8f3ff;
-      color: #3182f6;
-      padding: 6px 12px;
+      background: #E8F3FF;
+      color: #3182F6;
+      padding: 4px 10px;
       border-radius: 8px;
       font-weight: 700;
       font-size: 13px;
@@ -270,7 +303,7 @@
 
     .result-desc {
       font-size: 14px;
-      color: #6b7684;
+      color: #6B7684;
       line-height: 1.5;
     }
   </style>
@@ -278,22 +311,21 @@
 <body>
 
   <div class="container">
-    <!-- 프로그래스 바 -->
-    <div class="progress-bar-container">
+    <div class="progress-wrapper">
       <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <!-- STEP 0: 안내 페이지 -->
+    <!-- STEP 0: 인트로 -->
     <div class="step active" id="step0">
       <div class="header-text">
-        <h1>팀원들의 역할을<br>스마트하게 나눠볼까요?</h1>
-        <p>각자의 장점을 살려 겹치지 않게 배정해 드려요.</p>
+        <h1>조별 과제 역할,<br>이제 스마트하게 나눠요</h1>
+        <p>각자의 장점만 고르면 겹치지 않게 배정해 드려요.</p>
       </div>
       
       <ul class="intro-list form-group">
-        <li><span>✨</span> 장점에 맞는 맞춤형 역할 분담</li>
-        <li><span>🎯</span> 해당하는 특성을 여러 개 중복 선택 가능</li>
-        <li><span>🔒</span> 역할이 겹치지 않는 스마트 분배 알고리즘</li>
+        <li><span>💡</span> 가장 중요한 핵심 역할 11가지 엄선</li>
+        <li><span>🎯</span> 나에게 맞는 장점 복수 선택 가능</li>
+        <li><span>🤝</span> 절대 겹치지 않는 스마트 분배 시스템</li>
       </ul>
 
       <div class="bottom-btn-group">
@@ -304,10 +336,10 @@
     <!-- STEP 1: 인원수 입력 -->
     <div class="step" id="step1">
       <div class="header-text">
-        <h1>모둠원이<br>모두 몇 명인가요?</h1>
+        <h1>팀원이 모두<br>몇 명인가요?</h1>
       </div>
       <div class="form-group">
-        <input type="number" id="memberCount" min="1" max="10" placeholder="숫자 입력 (예: 4)">
+        <input type="number" id="memberCount" min="1" max="10" placeholder="숫자만 입력 (최대 10명)">
       </div>
       <div class="bottom-btn-group">
         <button class="btn btn-secondary" onclick="goToStep(0)">이전</button>
@@ -318,11 +350,9 @@
     <!-- STEP 2: 이름 입력 -->
     <div class="step" id="step2">
       <div class="header-text">
-        <h1>모둠원의 이름을<br>알려주세요</h1>
+        <h1>팀원들의 이름을<br>알려주세요</h1>
       </div>
-      <div class="form-group member-input-list" id="nameInputs">
-        <!-- JS로 동적 생성 -->
-      </div>
+      <div class="form-group member-input-list" id="nameInputs"></div>
       <div class="bottom-btn-group">
         <button class="btn btn-secondary" onclick="goToStep(1)">이전</button>
         <button class="btn" onclick="setupTraits()">다음</button>
@@ -333,11 +363,9 @@
     <div class="step" id="step3">
       <div class="header-text">
         <h1>각자에게 어울리는<br>장점을 모두 골라주세요</h1>
-        <p>복수 선택이 가능해요.</p>
+        <p>해당하는 항목을 자유롭게 눌러주세요.</p>
       </div>
-      <div class="form-group" id="traitSelectionList" style="overflow-y: auto;">
-        <!-- JS로 동적 생성 -->
-      </div>
+      <div class="form-group" id="traitSelectionList" style="overflow-y: auto; padding-right: 5px;"></div>
       <div class="bottom-btn-group">
         <button class="btn btn-secondary" onclick="goToStep(2)">이전</button>
         <button class="btn" onclick="calculateRoles()">결과 보기</button>
@@ -348,10 +376,9 @@
     <div class="step" id="step4">
       <div class="header-text">
         <h1>역할 배정이<br>완료되었어요 🎉</h1>
+        <p>팀원들과 결과를 공유해 보세요.</p>
       </div>
-      <div class="form-group result-list" id="resultList" style="overflow-y: auto;">
-        <!-- JS로 동적 생성 -->
-      </div>
+      <div class="form-group result-list" id="resultList" style="overflow-y: auto; padding-right: 5px;"></div>
       <div class="bottom-btn-group">
         <button class="btn" onclick="resetAll()">새로 배정하기</button>
       </div>
@@ -359,30 +386,19 @@
   </div>
 
   <script>
-    // 22가지 특성 및 역할 매핑 DB (기존과 동일)
+    // 핵심 역할 11가지 압축 데이터 (이모지 추가)
     const traitsData = [
-      { id: 1, trait: "리더십이 뛰어남", role: "총괄 팀장", desc: "진행 상황을 총괄하고 팀원들의 의견을 모아요." },
-      { id: 2, trait: "발표를 잘함", role: "메인 발표자", desc: "완성된 결과물을 사람들 앞에서 전달력 있게 발표해요." },
-      { id: 3, trait: "글씨/정리를 잘함", role: "기록 서기", desc: "회의 내용과 아이디어를 깔끔하게 문서로 기록해요." },
-      { id: 4, trait: "PPT를 잘 다룸", role: "자료 제작자", desc: "슬라이드 디자인과 시각 자료를 수준 높게 제작해요." },
-      { id: 5, trait: "검색을 잘함", role: "자료 조사원", desc: "주제와 관련된 신뢰성 있는 데이터를 정확히 찾아요." },
-      { id: 6, trait: "시간 관리를 잘함", role: "타임키퍼", desc: "단계별 시간을 체크하고 일정이 지연되지 않게 관리해요." },
-      { id: 7, trait: "창의력이 좋음", role: "기획 디렉터", desc: "참신한 아이디어와 핵심 방향성을 제시해요." },
-      { id: 8, trait: "꼼꼼하고 치밀함", role: "최종 검토관", desc: "결과물의 오탈자나 오류를 꼼꼼하게 다듬어요." },
-      { id: 9, trait: "분위기를 잘 띄움", role: "분위기 매니저", desc: "긍정적인 분위기 속에서 협력할 수 있도록 도와요." },
-      { id: 10, trait: "디자인 감각이 있음", role: "비주얼 디자이너", desc: "포스터, 표지 등 시각적인 요소를 예쁘게 꾸며요." },
-      { id: 11, trait: "경청하고 배려함", role: "의견 중재자", desc: "의견 대립이 있을 때 부드럽게 타협점을 찾아요." },
-      { id: 12, trait: "손재주가 좋음", role: "실물 제작자", desc: "실제 모형이나 오프라인 결과물을 훌륭하게 만들어요." },
-      { id: 13, trait: "분석력이 뛰어남", role: "논리 분석관", desc: "자료들의 연관성을 논리적으로 파악해 결론을 내요." },
-      { id: 14, trait: "말에 설득력이 있음", role: "Q&A 담당", desc: "발표 후 이어질 날카로운 질문에 논리적으로 답변해요." },
-      { id: 15, trait: "책임감이 강함", role: "프로젝트 매니저", desc: "팀의 규칙 준수를 이끌고 맡은 작업을 끝까지 책임져요." },
-      { id: 16, trait: "상황 판단이 빠름", role: "위기관리자", desc: "문제 발생 시 빠르고 적절한 해결책을 찾아내요." },
-      { id: 17, trait: "외국어를 잘함", role: "해외자료 탐색", desc: "해외 사이트나 외국 자료 등 폭넓은 정보를 수집해요." },
-      { id: 18, trait: "영상 편집을 잘함", role: "미디어 에디터", desc: "영상 촬영이나 자막 입력 등 미디어 콘텐츠를 제작해요." },
-      { id: 19, trait: "도와주는 걸 좋아함", role: "올라운더", desc: "일손이 부족한 파트에 유연하게 들어가 작업을 도와요." },
-      { id: 20, trait: "계산이 빠르고 정확함", role: "예산 관리원", desc: "활동에 필요한 준비물과 예산, 비용을 꼼꼼히 관리해요." },
-      { id: 21, trait: "핵심 요약을 잘함", role: "개요 요약가", desc: "방대한 조사 자료에서 중요한 포인트만 빠르게 추출해요." },
-      { id: 22, trait: "호기심이 많음", role: "피드백 전문가", desc: "결과물의 허점을 미리 찾아내어 발전적 피드백을 줘요." }
+      { id: 1, trait: "리더십이 뛰어남", role: "총괄 팀장", emoji: "👑", desc: "전반적인 진행 상황을 총괄하고 팀원들의 의견을 조율해요." },
+      { id: 2, trait: "발표를 잘함", role: "메인 발표자", emoji: "🎤", desc: "완성된 결과물을 사람들 앞에서 전달력 있게 발표해요." },
+      { id: 3, trait: "글씨·정리를 잘함", role: "기록 서기", emoji: "✍️", desc: "회의 내용과 흩어진 아이디어를 깔끔하게 문서로 정리해요." },
+      { id: 4, trait: "PPT·컴퓨터를 잘 다룸", role: "자료 제작자", emoji: "💻", desc: "슬라이드 디자인과 시각 자료를 수준 높게 제작해요." },
+      { id: 5, trait: "검색과 조사를 잘함", role: "자료 조사원", emoji: "🔍", desc: "주제와 관련된 신뢰성 있는 데이터를 빠르고 정확히 찾아내요." },
+      { id: 6, trait: "창의력이 좋음", role: "기획 디렉터", emoji: "💡", desc: "남들과 다른 참신한 아이디어와 전체적인 방향성을 제시해요." },
+      { id: 7, trait: "분위기를 잘 띄움", role: "분위기 메이커", emoji: "🎉", desc: "긍정적인 분위기 속에서 협력할 수 있도록 팀에 에너지를 줘요." },
+      { id: 8, trait: "디자인 감각이 있음", role: "비주얼 디자이너", emoji: "🎨", desc: "포스터, 표지 등 결과물의 시각적인 요소를 예쁘게 꾸며요." },
+      { id: 9, trait: "꼼꼼하고 치밀함", role: "최종 검토관", emoji: "🧐", desc: "결과물의 오탈자나 논리적 오류를 꼼꼼하게 다듬고 마무리해요." },
+      { id: 10, trait: "시간 약속을 잘 지킴", role: "타임키퍼", emoji: "⏱️", desc: "단계별 시간을 체크하고 전체 일정이 지연되지 않게 관리해요." },
+      { id: 11, trait: "도와주는 걸 좋아함", role: "올라운더", emoji: "🤝", desc: "일손이 부족한 파트에 유연하게 들어가 작업을 든든하게 도와요." }
     ];
 
     let members = []; 
@@ -392,7 +408,6 @@
       document.getElementById(`step${stepNum}`).classList.add('active');
       
       const progressBar = document.getElementById('progressBar');
-      // 시작페이지(0)는 0%, 마지막페이지(4)는 100%
       progressBar.style.width = stepNum === 0 ? '0%' : (stepNum / 4 * 100) + '%';
     }
 
@@ -401,7 +416,7 @@
       const count = parseInt(countInput.value);
 
       if (!count || count < 1 || count > 10) {
-        alert("1명에서 10명 사이의 숫자를 입력해주세요.");
+        alert("1명에서 10명 사이의 숫자를 입력해 주세요.");
         return;
       }
 
@@ -409,9 +424,7 @@
       nameInputsDiv.innerHTML = '';
 
       for (let i = 1; i <= count; i++) {
-        nameInputsDiv.innerHTML += `
-          <input type="text" class="member-name-input" placeholder="팀원 ${i} 이름">
-        `;
+        nameInputsDiv.innerHTML += `<input type="text" class="member-name-input" placeholder="팀원 ${i} 이름">`;
       }
       goToStep(2);
     }
@@ -423,7 +436,7 @@
       for (let i = 0; i < nameInputs.length; i++) {
         const name = nameInputs[i].value.trim();
         if (!name) {
-          alert(`팀원 ${i + 1}의 이름을 입력해주세요.`);
+          alert(`팀원 ${i + 1}의 이름을 입력해 주세요.`);
           return;
         }
         members.push({ name: name, selectedTraitIds: [] });
@@ -444,10 +457,8 @@
 
         traitSelectionDiv.innerHTML += `
           <div class="trait-card">
-            <h4>${member.name}</h4>
-            <div class="trait-grid">
-              ${traitOptionsHTML}
-            </div>
+            <h4>👤 ${member.name}</h4>
+            <div class="trait-grid">${traitOptionsHTML}</div>
           </div>
         `;
       });
@@ -471,7 +482,7 @@
     function calculateRoles() {
       for (let i = 0; i < members.length; i++) {
         if (members[i].selectedTraitIds.length === 0) {
-          alert(`${members[i].name}님의 장점을 1개 이상 선택해주세요.`);
+          alert(`${members[i].name}님의 장점을 1개 이상 골라주세요.`);
           return;
         }
       }
@@ -480,6 +491,7 @@
       const finalAssignments = [];
       const traitSelectionCounts = {};
 
+      // 선택 빈도수 계산
       members.forEach(m => {
         m.selectedTraitIds.forEach(id => {
           traitSelectionCounts[id] = (traitSelectionCounts[id] || 0) + 1;
@@ -487,12 +499,12 @@
       });
 
       members.forEach(member => {
+        // 남들이 적게 고른 특성(희소성 높은 것)부터 우선순위 배정
         const sortedCandidateTraitIds = [...member.selectedTraitIds].sort((a, b) => {
           return traitSelectionCounts[a] - traitSelectionCounts[b];
         });
 
         let chosenTraitId = null;
-
         for (let tid of sortedCandidateTraitIds) {
           if (!assignedRoleIds.has(tid)) {
             chosenTraitId = tid;
@@ -500,6 +512,7 @@
           }
         }
 
+        // 선택한 게 다 겹쳤다면, 남은 역할 중 아무거나 1개 배정
         if (!chosenTraitId) {
           for (let t of traitsData) {
             if (!assignedRoleIds.has(t.id)) {
@@ -516,6 +529,7 @@
           name: member.name,
           role: traitInfo.role,
           desc: traitInfo.desc,
+          emoji: traitInfo.emoji
         });
       });
 
@@ -525,12 +539,13 @@
       finalAssignments.forEach(item => {
         resultDiv.innerHTML += `
           <div class="result-item">
-            <div class="result-header">
-              <span class="result-name">${item.name}</span>
-              <span class="result-role">${item.role}</span>
-            </div>
-            <div class="result-desc">
-              ${item.desc}
+            <div class="result-emoji">${item.emoji}</div>
+            <div class="result-content">
+              <div class="result-header">
+                <span class="result-name">${item.name}</span>
+                <span class="result-role">${item.role}</span>
+              </div>
+              <div class="result-desc">${item.desc}</div>
             </div>
           </div>
         `;
