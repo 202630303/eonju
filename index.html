@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오늘 뭐 먹지? | 점심 메뉴 추천</title>
+  <title>모둠원 스마트 역할 배정</title>
   <style>
-    /* 기본 스타일 초기화 및 폰트 설정 */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -14,273 +13,549 @@
     }
 
     body {
-      background-color: #f8f9fa;
+      background-color: #f4f6f9;
       color: #333;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
     }
 
+    .container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 650px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 35px;
+      position: relative;
+    }
+
+    /* 진행 단계 표시줄 */
+    .progress-bar-container {
+      width: 100%;
+      background-color: #e5e7eb;
+      height: 6px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #3b82f6;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
     header {
       text-align: center;
-      margin-top: 40px;
       margin-bottom: 30px;
     }
 
     header h1 {
-      font-size: 2.2rem;
-      color: #ff6b6b;
-      margin-bottom: 10px;
+      font-size: 1.8rem;
+      color: #3b82f6;
+      margin-bottom: 8px;
     }
 
     header p {
-      color: #666;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      color: #6b7280;
     }
 
-    /* 메인 랜덤 추천 섹션 */
-    .random-section {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-      padding: 30px;
-      width: 100%;
-      max-width: 450px;
-      text-align: center;
-      margin-bottom: 40px;
+    .step {
+      display: none;
     }
 
-    .result-display {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #2b2b2b;
-      margin: 20px 0;
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #fff5f5;
-      border-radius: 12px;
-      border: 2px dashed #ff8787;
+    .step.active {
+      display: block;
+      animation: fadeIn 0.4s ease-in-out;
     }
 
-    .btn-random {
-      background-color: #ff6b6b;
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .btn-random:hover {
-      background-color: #fa5252;
-    }
-
-    .btn-random:active {
-      transform: scale(0.98);
-    }
-
-    /* 카테고리 필터 섹션 */
-    .category-section {
-      width: 100%;
-      max-width: 800px;
-    }
-
-    .category-section h2 {
-      font-size: 1.4rem;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-
-    .category-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
+    /* 사이트 소개 전용 카드 */
+    .intro-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 14px;
+      padding: 20px;
       margin-bottom: 25px;
     }
 
-    .btn-category {
-      background: #e9ecef;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #495057;
-      transition: all 0.2s;
-    }
-
-    .btn-category.active, .btn-category:hover {
-      background: #ff6b6b;
-      color: white;
-    }
-
-    /* 메뉴 카드 리스트 GRID */
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 15px;
-    }
-
-    .menu-card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
-      border: 1px solid #f1f3f5;
-    }
-
-    .menu-card .emoji {
-      font-size: 2.5rem;
+    .intro-box h3 {
+      color: #0369a1;
+      font-size: 1.15rem;
       margin-bottom: 10px;
     }
 
-    .menu-card .name {
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 5px;
+    .intro-box ul {
+      list-style: none;
+      padding-left: 0;
     }
 
-    .menu-card .category-tag {
-      font-size: 0.8rem;
-      color: #868e96;
-      background: #f1f3f5;
-      padding: 3px 8px;
+    .intro-box li {
+      font-size: 0.95rem;
+      color: #334155;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #374151;
+    }
+
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e5e7eb;
       border-radius: 10px;
-      display: inline-block;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
     }
 
-    footer {
-      margin-top: auto;
-      padding: 30px 0 10px;
-      color: #adb5bd;
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      border-color: #3b82f6;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      flex: 1;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #2563eb;
+    }
+
+    .btn-secondary {
+      background-color: #9ca3af;
+    }
+
+    .btn-secondary:hover {
+      background-color: #4b5563;
+    }
+
+    .member-input-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    /* 특성 카드 및 그리드 */
+    .trait-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .trait-card h4 {
+      margin-bottom: 6px;
+      color: #1f2937;
+      font-size: 1.1rem;
+    }
+
+    .trait-card p.subtext {
+      font-size: 0.82rem;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    .trait-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+    }
+
+    .trait-option {
+      background: white;
+      border: 1px solid #d1d5db;
+      padding: 8px 10px;
+      border-radius: 8px;
       font-size: 0.85rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .trait-option:hover {
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+
+    .trait-option.selected {
+      background-color: #eff6ff;
+      border-color: #3b82f6;
+      color: #1d4ed8;
+      font-weight: bold;
+      box-shadow: 0 0 0 1px #3b82f6;
+    }
+
+    /* 결과 카드 */
+    .result-card {
+      background: #f0f9ff;
+      border: 2px solid #bae6fd;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 15px;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .result-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #0369a1;
+    }
+
+    .result-role {
+      background: #0284c7;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .result-trait {
+      font-size: 0.88rem;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    .result-desc {
+      font-size: 0.88rem;
+      color: #334155;
+      line-height: 1.4;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>오늘 뭐 먹지? 🍱</h1>
-    <p>결정장애를 위한 오늘 점심 메뉴 추천 서비스</p>
-  </header>
-
-  <!-- 메인 랜덤 추천 기능 -->
-  <section class="random-section">
-    <h3>오늘의 추천 점심은?</h3>
-    <div class="result-display" id="result">버튼을 눌러보세요!</div>
-    <button class="btn-random" onclick="recommendMenu()">메뉴 랜덤 추천받기 🎲</button>
-  </section>
-
-  <!-- 전체 메뉴 및 카테고리 보기 -->
-  <section class="category-section">
-    <h2>전체 메뉴 목록</h2>
-    <div class="category-buttons">
-      <button class="btn-category active" onclick="filterMenu('전체', this)">전체</button>
-      <button class="btn-category" onclick="filterMenu('한식', this)">한식</button>
-      <button class="btn-category" onclick="filterMenu('중식', this)">중식</button>
-      <button class="btn-category" onclick="filterMenu('일식', this)">일식</button>
-      <button class="btn-category" onclick="filterMenu('양식', this)">양식</button>
-      <button class="btn-category" onclick="filterMenu('분식/기타', this)">분식/기타</button>
+  <div class="container">
+    <!-- 프로그래스 바 -->
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <div class="menu-grid" id="menuGrid">
-      <!-- 자바스크립트에 의해 동적으로 생성됩니다. -->
-    </div>
-  </section>
+    <header>
+      <h1>👥 스마트 모둠원 역할 배정기</h1>
+      <p>팀원의 특성을 기반으로 최적의 겹치지 않는 역할을 자동으로 배정합니다</p>
+    </header>
 
-  <footer>
-    <p>© 2026 Today's Lunch Recommendation. All rights reserved.</p>
-  </footer>
+    <!-- STEP 0: 안내 페이지 -->
+    <div class="step active" id="step0">
+      <div class="intro-box">
+        <h3>💡 이 사이트는 어떤 곳인가요?</h3>
+        <ul>
+          <li>✨ <strong>맞춤형 역할 분담:</strong> 각 팀원의 장점과 개성을 반영하여 역할을 정해줍니다.</li>
+          <li>🎯 <strong>복수 선택 가능:</strong> 모둠원마다 해당하는 특성을 여러 개 자유롭게 선택할 수 있습니다.</li>
+          <li>🔒 <strong>역할 중복 절대 방지:</strong> 팀원 간에 같은 역할이 겹치지 않도록 스마트하게 분배됩니다.</li>
+          <li>⚡ <strong>모둠 활동 준비 완료:</strong> 클릭 몇 번으로 갈등 없는 최적의 조 편성을 완료하세요!</li>
+        </ul>
+      </div>
+      <button class="btn" onclick="goToStep(1)">역할 배정 시작하기 🚀</button>
+    </div>
+
+    <!-- STEP 1: 인원수 입력 -->
+    <div class="step" id="step1">
+      <div class="form-group">
+        <label for="memberCount">모둠원이 몇 명인가요? (1 ~ 10명)</label>
+        <input type="number" id="memberCount" min="1" max="10" placeholder="예: 4">
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep(0)">이전</button>
+        <button class="btn" onclick="setupNames()">다음 단계 (이름 입력)</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: 이름 입력 -->
+    <div class="step" id="step2">
+      <div class="form-group">
+        <label>모둠원의 이름을 입력해 주세요</label>
+        <div class="member-input-list" id="nameInputs"></div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep(1)">이전</button>
+        <button class="btn" onclick="setupTraits()">다음 단계 (특성 선택)</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: 특성 선택 (복수 선택 지원) -->
+    <div class="step" id="step3">
+      <div class="form-group">
+        <label>모둠원별 특성을 선택해 주세요 (다중 선택 가능)</label>
+        <div id="traitSelectionList"></div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep(2)">이전</button>
+        <button class="btn" onclick="calculateRoles()">최적의 역할 배정하기 ✨</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: 결과 확인 -->
+    <div class="step" id="step4">
+      <h3 style="margin-bottom: 15px; text-align: center;">🎉 최종 역할 배정 결과 🎉</h3>
+      <div id="resultList"></div>
+      <button class="btn btn-secondary" onclick="resetAll()" style="width: 100%; margin-top: 10px;">처음으로 돌아가기</button>
+    </div>
+  </div>
 
   <script>
-    // 메뉴 데이터 정의
-    const menuList = [
-      { name: "김치찌개", category: "한식", emoji: "🥘" },
-      { name: "된장찌개", category: "한식", emoji: "🍲" },
-      { name: "제육볶음", category: "한식", emoji: "🥩" },
-      { name: "비빔밥", category: "한식", emoji: "🥗" },
-      { name: "짜장면", category: "중식", emoji: "🍜" },
-      { name: "짬뽕", category: "중식", emoji: "🍲" },
-      { name: "마라탕", category: "중식", emoji: "🥘" },
-      { name: "돈까스", category: "일식", emoji: "🍱" },
-      { name: "초밥", category: "일식", emoji: "🍣" },
-      { name: "라멘", category: "일식", emoji: "🍜" },
-      { name: "파스타", category: "양식", emoji: "🍝" },
-      { name: "수제버거", category: "양식", emoji: "🍔" },
-      { name: "피자", category: "양식", emoji: "🍕" },
-      { name: "떡볶이", category: "분식/기타", emoji: "🍢" },
-      { name: "김밥 & 라면", category: "분식/기타", emoji: "🍙" },
-      { name: "쌀국수", category: "분식/기타", emoji: "🍜" }
+    // 22가지 특성 및 겹치지 않는 역할 매핑 DB
+    const traitsData = [
+      { id: 1, trait: "리더십이 뛰어남", role: "모둠장 (총괄 팀장)", desc: "전체 진행 상황을 총괄하고 팀원들의 의견을 모으고 판단을 내립니다." },
+      { id: 2, trait: "발표를 잘함", role: "메인 발표자", desc: "완성된 결과물을 사람들 앞에서 자신감 있고 전달력 있게 발표합니다." },
+      { id: 3, trait: "글씨나 정리를 잘함", role: "기록 서기", desc: "회의 내용과 핵심 아이디어를 깔끔하고 명확하게 문서로 기록합니다." },
+      { id: 4, trait: "컴퓨터/PPT 활용 우수", role: "발표자료 제작자 (PPT)", desc: "슬라이드 디자인과 시각 자료를 수준 높게 제작합니다." },
+      { id: 5, trait: "자료 조사를 잘함", role: "메인 데이터 조사원", desc: "주제와 관련된 신뢰성 있는 자료 및 통계 데이터를 정밀 탐색합니다." },
+      { id: 6, trait: "시간 관리를 잘함", role: "타임키퍼 (진행 관리)", desc: "단계별 작업 시간을 체크하고 일정이 지연되지 않도록 조율합니다." },
+      { id: 7, trait: "아이디어가 창의적임", role: "기획 디렉터", desc: "남들과 다른 참신한 아이디어와 주제의 핵심 방향성을 제시합니다." },
+      { id: 8, trait: "꼼꼼하고 치밀함", role: "최종 검토관", desc: "결과물의 오탈자, 논리적 오류, 완성도를 최종적으로 가다듬습니다." },
+      { id: 9, trait: "분위기를 좋게 만듦", role: "분위기 매니저", desc: "팀의 사기를 높이고 긍정적인 분위기 속에서 협력하도록 돕습니다." },
+      { id: 10, trait: "그림/디자인을 잘함", role: "비주얼 디자이너", desc: "포스터, 표지, 이미지 크리에이티브 요소를 미적으로 전담합니다." },
+      { id: 11, trait: "경청을 잘함", role: "의견 조율 중재자", desc: "팀원 간 의견 대립이 있을 때 경청하고 부드럽게 타협점을 찾습니다." },
+      { id: 12, trait: "손재주가 좋음", role: "실물 제작 담당자", desc: "실제 모형, 시공간 작업물, 오프라인 결과물을 만듭니다." },
+      { id: 13, trait: "논리적이고 분석적임", role: "논리 분석관", desc: "제시된 자료들의 연관성을 논리적으로 파악하여 결론을 이끌어냅니다." },
+      { id: 14, trait: "설득력이 있음", role: "질의응답 스페셜리스트", desc: "발표 후 이어질 평가자나 타 팀의 날카로운 질문에 논리적으로 답변합니다." },
+      { id: 15, trait: "성실하고 책임감이 강함", role: "프로젝트 서포터", desc: "팀의 기본 규칙을 준수하도록 유도하고 맡은 작업을 끝까지 책임집니다." },
+      { id: 16, trait: "상황 판단이 빠름", role: "위기관리 위원", desc: "예상치 못한 돌발 상황이나 문제 발생 시 빠르고 적절한 대안을 찾습니다." },
+      { id: 17, trait: "외국어를 잘함", role: "글로벌 정보 탐색원", desc: "해외 사이트, 논문, 외국 자료 등 폭넓은 해외 정보를 찾아 수집합니다." },
+      { id: 18, trait: "영상 편집을 잘함", role: "미디어 에디터", desc: "영상 촬영, 자막 입력, 영상 편집 등 미디어 콘텐츠를 제작합니다." },
+      { id: 19, trait: "남을 잘 도와줌", role: "만능 어시스턴트", desc: "일손이 부족한 파트에 유연하게 들어가 작업을 보조하고 지원합니다." },
+      { id: 20, trait: "현실적이고 계산이 정확함", role: "물품 & 예산 관리원", desc: "모둠 활동에 필요한 준비물과 예산, 비용을 철저하게 관리합니다." },
+      { id: 21, trait: "요약과 핵심 파악을 잘함", role: "개요 요약가", desc: "방대한 조사 자료에서 핵심 포인트만 빠르게 요약 추출합니다." },
+      { id: 22, trait: "질문을 잘하고 호기심이 많음", role: "피드백 전문가", desc: "우리 팀 결과물의 허점을 미리 질문해 보며 발전적 피드백을 제공합니다." }
     ];
 
-    // 랜덤 추천 함수 (애니메이션 효과 포함)
-    function recommendMenu() {
-      const resultDiv = document.getElementById('result');
-      let counter = 0;
+    let members = []; // { name: '', selectedTraitIds: [] }
+
+    // 단계 이동 및 프로그래스 바 업데이트
+    function goToStep(stepNum) {
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      document.getElementById(`step${stepNum}`).classList.add('active');
       
-      // 추첨 효과 (빠르게 메뉴가 바뀌는 액션)
-      const interval = setInterval(() => {
-        const randomIndex = Math.floor(Math.random() * menuList.length);
-        const item = menuList[randomIndex];
-        resultDiv.textContent = `${item.emoji} ${item.name}`;
-        counter++;
-
-        if (counter > 15) {
-          clearInterval(interval);
-          // 최종 결과 선택
-          const finalIndex = Math.floor(Math.random() * menuList.length);
-          const finalItem = menuList[finalIndex];
-          resultDiv.textContent = `🎉 ${finalItem.emoji} ${finalItem.name} 🎉`;
-        }
-      }, 70);
+      const progressBar = document.getElementById('progressBar');
+      progressBar.style.width = (stepNum / 4 * 100) + '%';
     }
 
-    // 카테고리 필터링 및 리스트 출력 함수
-    function displayMenus(category = '전체') {
-      const grid = document.getElementById('menuGrid');
-      grid.innerHTML = '';
+    // 1단계 -> 2단계: 이름 입력칸 생성
+    function setupNames() {
+      const countInput = document.getElementById('memberCount');
+      const count = parseInt(countInput.value);
 
-      const filteredList = category === '전체' 
-        ? menuList 
-        : menuList.filter(item => item.category === category);
+      if (!count || count < 1 || count > 10) {
+        alert("1명 이상 10명 이하의 인원수를 입력해 주세요.");
+        return;
+      }
 
-      filteredList.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'menu-card';
-        card.innerHTML = `
-          <div class="emoji">${item.emoji}</div>
-          <div class="name">${item.name}</div>
-          <span class="category-tag">${item.category}</span>
+      const nameInputsDiv = document.getElementById('nameInputs');
+      nameInputsDiv.innerHTML = '';
+
+      for (let i = 1; i <= count; i++) {
+        nameInputsDiv.innerHTML += `
+          <div>
+            <input type="text" class="member-name-input" placeholder="모둠원 ${i} 이름 (예: 김철수)">
+          </div>
         `;
-        grid.appendChild(card);
+      }
+
+      goToStep(2);
+    }
+
+    // 2단계 -> 3단계: 특성 선택 카드 생성
+    function setupTraits() {
+      const nameInputs = document.querySelectorAll('.member-name-input');
+      members = [];
+
+      for (let i = 0; i < nameInputs.length; i++) {
+        const name = nameInputs[i].value.trim();
+        if (!name) {
+          alert(`모둠원 ${i + 1}의 이름을 입력해 주세요.`);
+          return;
+        }
+        members.push({ name: name, selectedTraitIds: [] });
+      }
+
+      const traitSelectionDiv = document.getElementById('traitSelectionList');
+      traitSelectionDiv.innerHTML = '';
+
+      members.forEach((member, mIndex) => {
+        let traitOptionsHTML = '';
+        traitsData.forEach(t => {
+          traitOptionsHTML += `
+            <div class="trait-option" onclick="toggleTrait(${mIndex}, ${t.id}, this)">
+              ${t.trait}
+            </div>
+          `;
+        });
+
+        traitSelectionDiv.innerHTML += `
+          <div class="trait-card">
+            <h4>👤 ${member.name}</h4>
+            <p class="subtext">해당하는 특성을 모두 클릭해 주세요 (복수 선택 가능)</p>
+            <div class="trait-grid">
+              ${traitOptionsHTML}
+            </div>
+          </div>
+        `;
       });
+
+      goToStep(3);
     }
 
-    // 카테고리 버튼 클릭 이벤트
-    function filterMenu(category, btnElement) {
-      // 모든 버튼의 active 클래스 제거 후 클릭된 버튼에 부여
-      const buttons = document.querySelectorAll('.btn-category');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
+    // 특성 다중 선택/해제 토글
+    function toggleTrait(memberIndex, traitId, element) {
+      const traitList = members[memberIndex].selectedTraitIds;
+      const index = traitList.indexOf(traitId);
 
-      displayMenus(category);
+      if (index > -1) {
+        traitList.splice(index, 1);
+        element.classList.remove('selected');
+      } else {
+        traitList.push(traitId);
+        element.classList.add('selected');
+      }
     }
 
-    // 페이지 로드시 전체 메뉴 초기화
-    window.onload = () => {
-      displayMenus();
-    };
+    // 중복 방지 최적 역할 배정 알고리즘
+    function calculateRoles() {
+      // 1. 최소 1개 이상 특성 선택 여부 확인
+      for (let i = 0; i < members.length; i++) {
+        if (members[i].selectedTraitIds.length === 0) {
+          alert(`'${members[i].name}' 모둠원의 특성을 최소 1개 이상 선택해 주세요.`);
+          return;
+        }
+      }
+
+      const assignedRoleIds = new Set();
+      const finalAssignments = [];
+
+      // 선택된 특성의 희소성(적게 선택된 특성 우선 배정) 기반 정렬 알고리즘
+      const traitSelectionCounts = {};
+      members.forEach(m => {
+        m.selectedTraitIds.forEach(id => {
+          traitSelectionCounts[id] = (traitSelectionCounts[id] || 0) + 1;
+        });
+      });
+
+      members.forEach(member => {
+        // 선택한 특성 중 희소성이 높은 순(선택 인원이 적은 순)으로 정렬
+        const sortedCandidateTraitIds = [...member.selectedTraitIds].sort((a, b) => {
+          return traitSelectionCounts[a] - traitSelectionCounts[b];
+        });
+
+        let chosenTraitId = null;
+
+        // 중복되지 않은 역할 찾기
+        for (let tid of sortedCandidateTraitIds) {
+          if (!assignedRoleIds.has(tid)) {
+            chosenTraitId = tid;
+            break;
+          }
+        }
+
+        // 만약 선택한 모든 특성이 다른 사람과 중복되어 이미 선점되었다면,
+        // 전체 특성 중 아직 아무도 안 맡은 역할 중 최선의 역할을 배정
+        if (!chosenTraitId) {
+          for (let t of traitsData) {
+            if (!assignedRoleIds.has(t.id)) {
+              chosenTraitId = t.id;
+              break;
+            }
+          }
+        }
+
+        assignedRoleIds.add(chosenTraitId);
+        const traitInfo = traitsData.find(t => t.id === chosenTraitId);
+
+        // 선택했던 특성 이름 텍스트 모음
+        const selectedTraitNames = member.selectedTraitIds
+          .map(id => traitsData.find(t => t.id === id).trait)
+          .join(', ');
+
+        finalAssignments.push({
+          name: member.name,
+          role: traitInfo.role,
+          desc: traitInfo.desc,
+          matchedTrait: traitInfo.trait,
+          allSelectedTraits: selectedTraitNames
+        });
+      });
+
+      // 4단계 결과 화면 렌더링
+      const resultDiv = document.getElementById('resultList');
+      resultDiv.innerHTML = '';
+
+      finalAssignments.forEach(item => {
+        resultDiv.innerHTML += `
+          <div class="result-card">
+            <div class="result-header">
+              <span class="result-name">${item.name}</span>
+              <span class="result-role">${item.role}</span>
+            </div>
+            <div class="result-trait">💡 <strong>선택한 특성:</strong> ${item.allSelectedTraits}</div>
+            <div class="result-desc">
+              📌 <strong>배정 이유 (${item.matchedTrait}):</strong><br>
+              ${item.desc}
+            </div>
+          </div>
+        `;
+      });
+
+      goToStep(4);
+    }
+
+    // 처음으로 리셋
+    function resetAll() {
+      document.getElementById('memberCount').value = '';
+      members = [];
+      goToStep(0);
+    }
   </script>
 </body>
 </html>
