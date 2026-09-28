@@ -3,10 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>스마트 역할 배정</title>
+  <title>스마트 역할 배정 | Premium</title>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     
+    :root {
+      --primary-color: #3182f6;
+      --primary-grad: linear-gradient(135deg, #3182f6 0%, #5c4bde 100%);
+      --bg-color: #f2f4f6;
+      --surface: #ffffff;
+      --text-main: #191f28;
+      --text-sub: #8b95a1;
+      --border: #e5e8eb;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,70 +25,80 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* 은은하게 움직이는 고급스러운 메쉬 그라데이션 배경 */
     body {
-      background-color: #F2F4F6;
+      background: linear-gradient(-45deg, #e0eafc, #cfdef3, #e8f3ff, #f2f4f6);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
-      color: #333D4B;
+      color: var(--text-main);
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* 메인 앱 컨테이너 */
     .container {
-      background: #FFFFFF;
+      background: var(--surface);
       width: 100%;
       max-width: 440px;
-      border-radius: 28px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-      padding: 40px 28px;
+      border-radius: 32px;
+      box-shadow: 0 24px 48px -12px rgba(49, 130, 246, 0.15), 0 4px 24px rgba(0, 0, 0, 0.04);
+      padding: 40px 30px;
       position: relative;
-      min-height: 640px;
+      min-height: 680px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
-    /* 상단 진행 바 */
+    /* 상단 진행 바 (그라데이션 적용) */
     .progress-wrapper {
       width: 100%;
-      background-color: #F2F4F6;
-      height: 6px;
-      border-radius: 6px;
-      margin-bottom: 36px;
+      background-color: var(--bg-color);
+      height: 8px;
+      border-radius: 8px;
+      margin-bottom: 40px;
       overflow: hidden;
     }
 
     .progress-bar {
       height: 100%;
-      background-color: #3182F6;
+      background: var(--primary-grad);
       width: 0%;
-      border-radius: 6px;
-      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 8px;
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* 헤더 텍스트 */
     .header-text {
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
 
     .header-text h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: #191F28;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-main);
       line-height: 1.35;
       letter-spacing: -0.5px;
     }
 
     .header-text p {
       font-size: 16px;
-      color: #8B95A1;
-      margin-top: 12px;
+      color: var(--text-sub);
+      margin-top: 14px;
       line-height: 1.5;
+      font-weight: 500;
     }
 
-    /* 화면 전환 애니메이션 */
+    /* 화면 전환 애니메이션 (Spring 효과) */
     .step {
       display: none;
       flex-direction: column;
@@ -87,15 +107,15 @@
 
     .step.active {
       display: flex;
-      animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: slideUpFade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
     @keyframes slideUpFade {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 입력 폼 */
+    /* 입력 폼 디자인 */
     .form-group {
       margin-bottom: 24px;
       flex: 1;
@@ -104,45 +124,46 @@
     input[type="number"],
     input[type="text"] {
       width: 100%;
-      padding: 18px 20px;
-      background-color: #F9FAFB;
-      border: 1px solid #E5E8EB;
-      border-radius: 16px;
-      font-size: 17px;
-      color: #191F28;
-      font-weight: 500;
-      transition: all 0.2s ease;
+      padding: 20px 24px;
+      background-color: #f9fafb;
+      border: 1.5px solid transparent;
+      border-radius: 20px;
+      font-size: 18px;
+      color: var(--text-main);
+      font-weight: 600;
+      transition: all 0.3s ease;
     }
 
     input::placeholder {
-      color: #B0B8C1;
+      color: #b0b8c1;
+      font-weight: 500;
     }
 
     input:focus {
       outline: none;
-      background-color: #FFFFFF;
-      border-color: #3182F6;
-      box-shadow: 0 0 0 4px rgba(49, 130, 246, 0.1);
+      background-color: #ffffff;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(49, 130, 246, 0.12);
     }
 
     .member-input-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      max-height: 400px;
+      gap: 14px;
+      max-height: 420px;
       overflow-y: auto;
-      padding-bottom: 10px;
+      padding-bottom: 20px;
     }
 
-    /* 특성 선택 칩(Chip) */
+    /* 특성 선택 칩 */
     .trait-card {
-      margin-bottom: 36px;
+      margin-bottom: 40px;
     }
 
     .trait-card h4 {
-      font-size: 18px;
-      color: #191F28;
-      margin-bottom: 16px;
+      font-size: 19px;
+      color: var(--text-main);
+      margin-bottom: 18px;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -156,65 +177,67 @@
     }
 
     .trait-option {
-      background: #F9FAFB;
-      border: 1px solid #E5E8EB;
-      color: #4E5968;
-      padding: 12px 18px;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      color: #4e5968;
+      padding: 14px 20px;
       border-radius: 100px;
       font-size: 15px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
     }
 
     .trait-option:active {
-      transform: scale(0.96);
+      transform: scale(0.94);
     }
 
     .trait-option.selected {
-      background-color: #E8F3FF;
-      border-color: #3182F6;
-      color: #3182F6;
-      font-weight: 600;
+      background: #f0f5ff;
+      border-color: var(--primary-color);
+      color: var(--primary-color);
       box-shadow: 0 4px 12px rgba(49, 130, 246, 0.15);
     }
 
-    /* 하단 버튼 */
+    /* 하단 버튼 (그라데이션 및 네온 효과) */
     .bottom-btn-group {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       margin-top: auto;
       padding-top: 20px;
+      background: linear-gradient(to top, rgba(255,255,255,1) 70%, rgba(255,255,255,0));
     }
 
     .btn {
       flex: 1;
-      background-color: #3182F6;
+      background: var(--primary-grad);
       color: white;
       border: none;
-      padding: 18px;
-      font-size: 17px;
-      font-weight: 600;
-      border-radius: 16px;
+      padding: 20px;
+      font-size: 18px;
+      font-weight: 700;
+      border-radius: 20px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       text-align: center;
+      box-shadow: 0 8px 16px rgba(49, 130, 246, 0.2);
     }
 
     .btn:active {
-      transform: scale(0.98);
-      background-color: #1B64DA;
+      transform: scale(0.97);
+      box-shadow: 0 4px 8px rgba(49, 130, 246, 0.15);
     }
 
     .btn-secondary {
-      background-color: #F2F4F6;
-      color: #4E5968;
+      background: var(--bg-color);
+      color: #4e5968;
       flex: 0.35;
+      box-shadow: none;
     }
 
     .btn-secondary:active {
-      background-color: #E5E8EB;
+      background: #e5e8eb;
     }
 
     /* 소개 리스트 */
@@ -224,23 +247,32 @@
     }
 
     .intro-list li {
-      background: #F9FAFB;
-      padding: 16px;
-      border-radius: 16px;
-      font-size: 15px;
-      color: #333D4B;
-      margin-bottom: 12px;
+      background: #f9fafb;
+      padding: 18px;
+      border-radius: 20px;
+      font-size: 16px;
+      color: var(--text-main);
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
-      font-weight: 500;
+      font-weight: 600;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .intro-list li:hover {
+      background: #ffffff;
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(49, 130, 246, 0.08);
     }
 
     .intro-list li span {
-      margin-right: 12px;
-      font-size: 20px;
+      margin-right: 14px;
+      font-size: 24px;
     }
 
-    /* 결과 리스트 디자인 */
+    /* 결과 리스트 디자인 (프리미엄 카드) */
     .result-list {
       display: flex;
       flex-direction: column;
@@ -249,30 +281,34 @@
     }
 
     .result-item {
-      background: #FFFFFF;
-      border: 1px solid #E5E8EB;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.03);
-      border-radius: 20px;
-      padding: 20px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+      border-radius: 24px;
+      padding: 24px;
       display: flex;
       align-items: flex-start;
-      gap: 16px;
-      transition: transform 0.2s ease;
+      gap: 18px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
-    .result-item:hover {
-      transform: translateY(-2px);
+    @keyframes popIn {
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .result-emoji {
       font-size: 32px;
-      background: #F2F4F6;
-      width: 56px;
-      height: 56px;
+      background: var(--primary-grad);
+      color: white;
+      width: 60px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 16px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(49, 130, 246, 0.2);
     }
 
     .result-content {
@@ -282,29 +318,37 @@
     .result-header {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .result-name {
-      font-size: 18px;
-      font-weight: 700;
-      color: #191F28;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
     }
 
     .result-role {
-      background: #E8F3FF;
-      color: #3182F6;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 13px;
+      background: #f0f5ff;
+      color: var(--primary-color);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
     }
 
     .result-desc {
-      font-size: 14px;
-      color: #6B7684;
-      line-height: 1.5;
+      font-size: 15px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    /* 스크롤바 숨기기 */
+    ::-webkit-scrollbar {
+      width: 0px;
+      background: transparent;
     }
   </style>
 </head>
@@ -315,16 +359,16 @@
       <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <!-- STEP 0: 인트로 -->
+    <!-- STEP 0 -->
     <div class="step active" id="step0">
       <div class="header-text">
         <h1>조별 과제 역할,<br>이제 스마트하게 나눠요</h1>
-        <p>각자의 장점만 고르면 겹치지 않게 배정해 드려요.</p>
+        <p>팀원들의 장점만 고르면 겹치지 않게 배정해 드려요.</p>
       </div>
       
       <ul class="intro-list form-group">
-        <li><span>💡</span> 가장 중요한 핵심 역할 11가지 엄선</li>
-        <li><span>🎯</span> 나에게 맞는 장점 복수 선택 가능</li>
+        <li><span>✨</span> 꼭 필요한 핵심 역할 11가지 엄선</li>
+        <li><span>🎯</span> 장점 중복 다중 선택 완벽 지원</li>
         <li><span>🤝</span> 절대 겹치지 않는 스마트 분배 시스템</li>
       </ul>
 
@@ -333,10 +377,11 @@
       </div>
     </div>
 
-    <!-- STEP 1: 인원수 입력 -->
+    <!-- STEP 1 -->
     <div class="step" id="step1">
       <div class="header-text">
         <h1>팀원이 모두<br>몇 명인가요?</h1>
+        <p>본인을 포함한 총 인원수를 적어주세요.</p>
       </div>
       <div class="form-group">
         <input type="number" id="memberCount" min="1" max="10" placeholder="숫자만 입력 (최대 10명)">
@@ -347,7 +392,7 @@
       </div>
     </div>
 
-    <!-- STEP 2: 이름 입력 -->
+    <!-- STEP 2 -->
     <div class="step" id="step2">
       <div class="header-text">
         <h1>팀원들의 이름을<br>알려주세요</h1>
@@ -359,26 +404,26 @@
       </div>
     </div>
 
-    <!-- STEP 3: 특성 선택 -->
+    <!-- STEP 3 -->
     <div class="step" id="step3">
       <div class="header-text">
         <h1>각자에게 어울리는<br>장점을 모두 골라주세요</h1>
-        <p>해당하는 항목을 자유롭게 눌러주세요.</p>
+        <p>복수 선택이 가능해요. 해당하는 항목을 눌러주세요.</p>
       </div>
-      <div class="form-group" id="traitSelectionList" style="overflow-y: auto; padding-right: 5px;"></div>
+      <div class="form-group" id="traitSelectionList" style="overflow-y: auto;"></div>
       <div class="bottom-btn-group">
         <button class="btn btn-secondary" onclick="goToStep(2)">이전</button>
-        <button class="btn" onclick="calculateRoles()">결과 보기</button>
+        <button class="btn" onclick="calculateRoles()">최적의 결과 보기</button>
       </div>
     </div>
 
-    <!-- STEP 4: 결과 확인 -->
+    <!-- STEP 4 -->
     <div class="step" id="step4">
       <div class="header-text">
         <h1>역할 배정이<br>완료되었어요 🎉</h1>
-        <p>팀원들과 결과를 공유해 보세요.</p>
+        <p>이제 팀원들과 함께 프로젝트를 시작해 보세요!</p>
       </div>
-      <div class="form-group result-list" id="resultList" style="overflow-y: auto; padding-right: 5px;"></div>
+      <div class="form-group result-list" id="resultList" style="overflow-y: auto;"></div>
       <div class="bottom-btn-group">
         <button class="btn" onclick="resetAll()">새로 배정하기</button>
       </div>
@@ -386,19 +431,19 @@
   </div>
 
   <script>
-    // 핵심 역할 11가지 압축 데이터 (이모지 추가)
+    // 11가지 핵심 데이터
     const traitsData = [
       { id: 1, trait: "리더십이 뛰어남", role: "총괄 팀장", emoji: "👑", desc: "전반적인 진행 상황을 총괄하고 팀원들의 의견을 조율해요." },
       { id: 2, trait: "발표를 잘함", role: "메인 발표자", emoji: "🎤", desc: "완성된 결과물을 사람들 앞에서 전달력 있게 발표해요." },
       { id: 3, trait: "글씨·정리를 잘함", role: "기록 서기", emoji: "✍️", desc: "회의 내용과 흩어진 아이디어를 깔끔하게 문서로 정리해요." },
-      { id: 4, trait: "PPT·컴퓨터를 잘 다룸", role: "자료 제작자", emoji: "💻", desc: "슬라이드 디자인과 시각 자료를 수준 높게 제작해요." },
+      { id: 4, trait: "PPT·디자인을 잘함", role: "자료 제작자", emoji: "💻", desc: "슬라이드 디자인과 시각 자료를 수준 높게 제작해요." },
       { id: 5, trait: "검색과 조사를 잘함", role: "자료 조사원", emoji: "🔍", desc: "주제와 관련된 신뢰성 있는 데이터를 빠르고 정확히 찾아내요." },
       { id: 6, trait: "창의력이 좋음", role: "기획 디렉터", emoji: "💡", desc: "남들과 다른 참신한 아이디어와 전체적인 방향성을 제시해요." },
       { id: 7, trait: "분위기를 잘 띄움", role: "분위기 메이커", emoji: "🎉", desc: "긍정적인 분위기 속에서 협력할 수 있도록 팀에 에너지를 줘요." },
-      { id: 8, trait: "디자인 감각이 있음", role: "비주얼 디자이너", emoji: "🎨", desc: "포스터, 표지 등 결과물의 시각적인 요소를 예쁘게 꾸며요." },
+      { id: 8, trait: "미적 감각이 있음", role: "비주얼 디자이너", emoji: "🎨", desc: "포스터, 표지 등 결과물의 시각적인 요소를 예쁘게 꾸며요." },
       { id: 9, trait: "꼼꼼하고 치밀함", role: "최종 검토관", emoji: "🧐", desc: "결과물의 오탈자나 논리적 오류를 꼼꼼하게 다듬고 마무리해요." },
-      { id: 10, trait: "시간 약속을 잘 지킴", role: "타임키퍼", emoji: "⏱️", desc: "단계별 시간을 체크하고 전체 일정이 지연되지 않게 관리해요." },
-      { id: 11, trait: "도와주는 걸 좋아함", role: "올라운더", emoji: "🤝", desc: "일손이 부족한 파트에 유연하게 들어가 작업을 든든하게 도와요." }
+      { id: 10, trait: "약속을 잘 지킴", role: "타임키퍼", emoji: "⏱️", desc: "단계별 시간을 체크하고 전체 일정이 지연되지 않게 관리해요." },
+      { id: 11, trait: "돕는 걸 좋아함", role: "올라운더", emoji: "🤝", desc: "일손이 부족한 파트에 유연하게 들어가 작업을 든든하게 도와요." }
     ];
 
     let members = []; 
@@ -491,7 +536,6 @@
       const finalAssignments = [];
       const traitSelectionCounts = {};
 
-      // 선택 빈도수 계산
       members.forEach(m => {
         m.selectedTraitIds.forEach(id => {
           traitSelectionCounts[id] = (traitSelectionCounts[id] || 0) + 1;
@@ -499,7 +543,6 @@
       });
 
       members.forEach(member => {
-        // 남들이 적게 고른 특성(희소성 높은 것)부터 우선순위 배정
         const sortedCandidateTraitIds = [...member.selectedTraitIds].sort((a, b) => {
           return traitSelectionCounts[a] - traitSelectionCounts[b];
         });
@@ -512,7 +555,6 @@
           }
         }
 
-        // 선택한 게 다 겹쳤다면, 남은 역할 중 아무거나 1개 배정
         if (!chosenTraitId) {
           for (let t of traitsData) {
             if (!assignedRoleIds.has(t.id)) {
@@ -536,9 +578,11 @@
       const resultDiv = document.getElementById('resultList');
       resultDiv.innerHTML = '';
 
-      finalAssignments.forEach(item => {
+      // 순차적으로 등장하는(Staggered) 애니메이션 적용
+      finalAssignments.forEach((item, index) => {
+        const delay = index * 0.15; // 0.15초 간격으로 카드 등장
         resultDiv.innerHTML += `
-          <div class="result-item">
+          <div class="result-item" style="animation-delay: ${delay}s;">
             <div class="result-emoji">${item.emoji}</div>
             <div class="result-content">
               <div class="result-header">
